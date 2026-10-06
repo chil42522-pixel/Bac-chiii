@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>🎮 Chinese Vocab Party</title>
+<style>
+:root{--bg:#fff7fb;--card:#fff;--ink:#252235;--muted:#777187;--primary:#7c4dff;--pink:#ff4fa3;--good:#18a66a;--bad:#e85b68;--gold:#ffb300;--line:#eadff0}
+*{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:radial-gradient(circle at 10% 0%,#ffe4f1,transparent 35%),radial-gradient(circle at 100% 20%,#e6ddff,transparent 35%),var(--bg);min-height:100vh}
+button,input,textarea{font:inherit} button{cursor:pointer;border:0}.app{max-width:980px;margin:auto;padding:18px 14px 40px}
+header{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:15px}
+.brand{display:flex;align-items:center;gap:12px}.avatar{width:64px;height:64px;border-radius:20px;object-fit:cover;background:#fff;border:3px solid #fff;box-shadow:0 8px 25px #7c4dff22}.brand h1{font-size:24px;margin:0}.brand p{margin:3px 0;color:var(--muted);font-size:13px}
+.topBtns{display:flex;gap:8px;flex-wrap:wrap}.small{padding:10px 13px;border-radius:13px;background:#fff;box-shadow:0 5px 18px #0000000d}
+.panel{background:#ffffffdf;border:1px solid var(--line);border-radius:24px;box-shadow:0 14px 40px #5c3a8b12;padding:18px;margin-bottom:15px;backdrop-filter:blur(8px)}
+.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.mode{padding:15px;border-radius:18px;background:#f7f2fb;border:2px solid transparent;text-align:left}.mode.active{border-color:var(--primary);background:#efe8ff}.mode b{display:block;font-size:16px}.mode span{font-size:12px;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:12px}.stat{background:#fff;border-radius:16px;padding:10px;text-align:center;border:1px solid var(--line)}.stat b{display:block;font-size:20px}.stat span{font-size:11px;color:var(--muted)}
+.progress{height:10px;background:#eee7f2;border-radius:99px;overflow:hidden;margin:12px 0}.bar{height:100%;width:0;background:linear-gradient(90deg,var(--pink),var(--primary));transition:.35s}
+.question{text-align:center;padding:20px 8px}.tag{display:inline-block;background:#f0eaff;color:#6640d9;border-radius:99px;padding:6px 10px;font-size:12px;font-weight:700}.hanzi{font-size:clamp(42px,9vw,78px);font-weight:800;line-height:1.1;margin:18px 0 5px}.pinyin{font-size:19px;color:#655c70}.meaningHint{color:var(--muted);margin-top:8px}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}.answer{min-height:65px;padding:13px;border-radius:17px;background:#fff;border:2px solid var(--line);text-align:left;transition:.15s}.answer:hover{transform:translateY(-2px);border-color:#bca9e9}.answer.correct{border-color:var(--good);background:#eafff4}.answer.wrong{border-color:var(--bad);background:#fff0f1}
+.actionRow{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin-top:14px}.primary{background:linear-gradient(135deg,var(--primary),var(--pink));color:white;padding:13px 20px;border-radius:15px;font-weight:800;box-shadow:0 8px 22px #7c4dff33}.secondary{background:#f2edf7;padding:12px 17px;border-radius:15px}
+.feedback{text-align:center;min-height:27px;margin-top:10px;font-weight:800}.good{color:var(--good)}.bad{color:var(--bad)}
+textarea{width:100%;min-height:125px;border:2px solid var(--line);border-radius:18px;padding:14px;resize:vertical;outline:none;background:#fff}.sentenceBox{max-width:760px;margin:auto}.blankSentence{font-size:25px;line-height:1.6;margin:20px 0}.blank{display:inline-block;min-width:95px;border-bottom:3px solid var(--primary);color:var(--primary);font-weight:800}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.controls label{background:#f6f1f8;padding:10px 12px;border-radius:13px;font-size:13px}.controls select,.controls input{border:0;background:transparent;outline:none}
+.overlay{position:fixed;inset:0;background:#1f153dcc;display:none;align-items:center;justify-content:center;padding:18px;z-index:20}.modal{background:#fff;border-radius:25px;padding:22px;max-width:700px;width:100%;max-height:88vh;overflow:auto}.modal h2{margin-top:0}.modal textarea{min-height:260px;font-family:ui-monospace,monospace;font-size:12px}.close{float:right;border-radius:10px;padding:8px;background:#f3edf7}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(100px);background:#24202b;color:#fff;padding:12px 17px;border-radius:99px;z-index:30;transition:.3s;box-shadow:0 10px 30px #0004}.toast.show{transform:translateX(-50%) translateY(0)}
+.hidden{display:none!important}.pulse{animation:pulse .45s}.shake{animation:shake .35s}@keyframes pulse{50%{transform:scale(1.03)}}@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@media(max-width:650px){.modes{grid-template-columns:1fr}.stats{grid-template-columns:repeat(3,1fr)}.answers{grid-template-columns:1fr}.brand h1{font-size:20px}.avatar{width:54px;height:54px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand">
+    <img id="avatar" class="avatar" alt="avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect width='100' height='100' rx='25' fill='%23eee8ff'/%3E%3Ctext x='50' y='63' text-anchor='middle' font-size='48'%3E🎮%3C/text%3E%3C/svg%3E">
+    <div><h1>Chinese Vocab Party 🎉</h1><p>Học tiếng Hoa phồn thể theo kiểu game</p></div>
+  </div>
+  <div class="topBtns">
+    <button class="small" id="soundBtn">🔊 Âm thanh</button>
+    <button class="small" id="avatarBtn">🖼️ Ảnh của tôi</button>
+    <input id="avatarFile" type="file" accept="image/*" class="hidden">
+    <button class="small" id="dataBtn">📚 Bộ từ vựng</button>
+  </div>
+</header>
+
+<section class="panel">
+  <div class="modes">
+    <button class="mode active" data-mode="translate"><b>🀄 Dịch chữ</b><span>Chọn 1 trong 4 nghĩa tiếng Việt</span></button>
+    <button class="mode" data-mode="fill"><b>✏️ Điền câu</b><span>Điền từ còn thiếu vào câu</span></button>
+    <button class="mode" data-mode="write"><b>🗣️ Đặt câu bằng từ</b><span>Tự viết câu tiếng Trung</span></button>
+  </div>
+  <div class="stats">
+    <div class="stat"><b id="score">0</b><span>Điểm</span></div>
+    <div class="stat"><b id="correct">0</b><span>Đúng</span></div>
+    <div class="stat"><b id="wrong">0</b><span>Sai</span></div>
+    <div class="stat"><b id="streak">0</b><span>Combo 🔥</span></div>
+    <div class="stat"><b id="best">0</b><span>Kỷ lục</span></div>
+  </div>
+  <div class="progress"><div id="bar" class="bar"></div></div>
+  <div class="controls">
+    <label>Số câu
+      <select id="rounds"><option value="10">10</option><option value="20">20</option><option value="50">50</option><option value="9999">Tất cả</option></select>
+    </label>
+    <label>⏱️ Thời gian/câu
+      <select id="timer"><option value="0">Không giới hạn</option><option value="15">15 giây</option><option value="30">30 giây</option></select>
+    </label>
+    <button class="secondary" id="startBtn">▶️ Bắt đầu / Chơi lại</button>
+  </div>
+</section>
+
+<section class="panel" id="game">
+  <div class="question">
+    <span class="tag" id="modeLabel">DỊCH CHỮ</span>
+    <div id="questionArea"></div>
+    <div id="feedback" class="feedback"></div>
+  </div>
+</section>
+
+<section class="panel">
+  <b>💡 Cách chơi</b>
+  <p style="color:var(--muted);margin-bottom:0">Trả lời đúng sẽ phát hiệu ứng vui nhộn và tự chuyển câu. Combo càng cao càng nhiều điểm. Nút 🔊 bật/tắt nhạc, hiệu ứng và đọc tiếng Trung.</p>
+</section>
+</div>
+
+<div class="overlay" id="dataModal">
+ <div class="modal">
+  <button class="close" id="closeData">✕</button>
+  <h2>📚 Nạp bộ 766 từ vựng</h2>
+  <p>Để không làm sai dữ liệu gốc, game cho phép bạn dán danh sách. Mỗi dòng dùng một trong các dạng:</p>
+  <pre style="background:#f6f2f8;padding:10px;border-radius:12px;white-space:pre-wrap">珍珠奶茶 | zhēnzhū nǎichá | trà sữa trân châu
+喜歡 | xǐhuān | thích</pre>
+  <textarea id="dataInput" placeholder="Dán 766 dòng từ vựng của bạn vào đây..."></textarea>
+  <div class="actionRow">
+    <button class="primary" id="saveData">💾 Lưu bộ từ</button>
+    <button class="secondary" id="clearData">Xóa dữ liệu đã lưu</button>
+  </div>
+  <p id="dataStatus" style="color:var(--muted)"></p>
+ </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const DEFAULT_VOCAB = [
+ {h:"珍珠奶茶",p:"zhēnzhū nǎichá",v:"trà sữa trân châu"},
+ {h:"喜歡",p:"xǐhuān",v:"thích"},
+ {h:"漂亮",p:"piàoliang",v:"đẹp"},
+ {h:"朋友",p:"péngyǒu",v:"bạn bè"},
+ {h:"學習",p:"xuéxí",v:"học tập"},
+ {h:"老師",p:"lǎoshī",v:"giáo viên"},
+ {h:"學生",p:"xuéshēng",v:"học sinh; sinh viên"},
+ {h:"吃飯",p:"chīfàn",v:"ăn cơm"},
+ {h:"喝水",p:"hēshuǐ",v:"uống nước"},
+ {h:"今天",p:"jīntiān",v:"hôm nay"},
+ {h:"明天",p:"míngtiān",v:"ngày mai"},
+ {h:"昨天",p:"zuótiān",v:"hôm qua"},
+ {h:"現在",p:"xiànzài",v:"bây giờ"},
+ {h:"什麼",p:"shénme",v:"cái gì"},
+ {h:"為什麼",p:"wèishénme",v:"tại sao"},
+ {h:"怎麼",p:"zěnme",v:"như thế nào"},
+ {h:"多少",p:"duōshǎo",v:"bao nhiêu"},
+ {h:"哪裡",p:"nǎlǐ",v:"ở đâu"},
+ {h:"可以",p:"kěyǐ",v:"có thể"},
+ {h:"應該",p:"yīnggāi",v:"nên; phải"}
+];
+
+let vocab = loadVocab();
+let mode="translate", index=0, roundTotal=10, score=0, correct=0, wrong=0, streak=0, best=Number(localStorage.bestScore||0);
+let current=null, locked=false, timerId=null, audioOn=true, audioCtx=null, musicTimer=null;
+
+const $=id=>document.getElementById(id);
+$("best").textContent=best;
+
+function loadVocab(){
+ try{const x=JSON.parse(localStorage.vocab766||"null"); if(Array.isArray(x)&&x.length>=2)return x}catch(e){}
+ return DEFAULT_VOCAB;
+}
+function parseVocab(raw){
+ return raw.split(/\r?\n/).map(line=>line.trim()).filter(Boolean).map(line=>{
+   let a=line.split(/\s*\|\s*/);
+   if(a.length<3) a=line.split(/\t+/);
+   if(a.length<3) return null;
+   return {h:a[0].trim(),p:a[1].trim(),v:a.slice(2).join(" | ").trim()};
+ }).filter(x=>x&&x.h&&x.p&&x.v);
+}
+function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
+function pick(arr){return arr[Math.floor(Math.random()*arr.length)]}
+function escapeHTML(s){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function speak(text){
+ if(!audioOn||!window.speechSynthesis)return;
+ speechSynthesis.cancel();
+ const u=new SpeechSynthesisUtterance(text);u.lang="zh-TW";u.rate=.88;u.pitch=1.08;speechSynthesis.speak(u);
+}
+function tone(freq,dur=.12,type="sine",gain=.07,delay=0){
+ if(!audioOn)return;
+ try{
+  if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+  o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(0,audioCtx.currentTime+delay);
+  g.gain.linearRampToValueAtTime(gain,audioCtx.currentTime+delay+.02);
+  g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+delay+dur);
+  o.connect(g);g.connect(audioCtx.destination);o.start(audioCtx.currentTime+delay);o.stop(audioCtx.currentTime+delay+dur+.03);
+ }catch(e){}
+}
+function correctSound(){
+ tone(523,.12,"triangle",.08);tone(659,.12,"triangle",.08,.08);tone(784,.18,"triangle",.1,.16);
+ if(streak>=3){tone(988,.15,"sine",.06,.3);tone(1175,.18,"sine",.06,.4)}
+}
+function wrongSound(){tone(220,.18,"triangle",.06);tone(165,.22,"triangle",.05,.13)}
+function winSound(){[523,659,784,1047,1319].forEach((f,i)=>tone(f,.2,"triangle",.08,i*.11))}
+function startMusic(){
+ if(!audioOn||musicTimer)return;
+ const notes=[261.63,329.63,392,523.25,392,329.63,293.66,349.23];
+ let i=0; musicTimer=setInterval(()=>{tone(notes[i++%notes.length],.13,"sine",.018)},420);
+}
+function stopMusic(){clearInterval(musicTimer);musicTimer=null}
+function toast(t){$("toast").textContent=t;$("toast").classList.add("show");setTimeout(()=>$("toast").classList.remove("show"),1500)}
+function updateStats(){
+ $("score").textContent=score;$("correct").textContent=correct;$("wrong").textContent=wrong;$("streak").textContent=streak;$("best").textContent=Math.max(best,score);
+ $("bar").style.width=Math.min(100,index/roundTotal*100)+"%";
+}
+function newRound(){
+ roundTotal=Math.min(Number($("rounds").value),vocab.length);
+ index=0;score=0;correct=0;wrong=0;streak=0;locked=false;clearTimeout(timerId);updateStats();nextQuestion();
+}
+function startTimer(){
+ clearTimeout(timerId);const secs=Number($("timer").value);if(!secs)return;
+ timerId=setTimeout(()=>{if(!locked)handleAnswer(null,false,true)},secs*1000);
+}
+function nextQuestion(){
+ clearTimeout(timerId);locked=false;
+ if(index>=roundTotal){finish();return}
+ current=pick(vocab);renderQuestion();updateStats();startTimer();
+}
+function renderQuestion(){
+ $("feedback").textContent="";$("feedback").className="feedback";
+ const labels={translate:"DỊCH CHỮ",fill:"ĐIỀN CÂU",write:"ĐẶT CÂU"};
+ $("modeLabel").textContent=labels[mode];
+ if(mode==="translate") renderTranslate(); else if(mode==="fill") renderFill(); else renderWrite();
+}
+function renderTranslate(){
+ const others=shuffle(vocab.filter(x=>x!==current)).slice(0,3).map(x=>x.v);
+ const opts=shuffle([current.v,...others]);
+ $("questionArea").innerHTML=`<div class="hanzi">${escapeHTML(current.h)}</div><div class="pinyin">${escapeHTML(current.p)}</div><div class="meaningHint">Nghĩa nào đúng?</div><div class="answers">${opts.map((x,i)=>`<button class="answer" data-v="${encodeURIComponent(x)}">${String.fromCharCode(65+i)}. ${escapeHTML(x)}</button>`).join("")}</div>`;
+ document.querySelectorAll(".answer").forEach(b=>b.onclick=()=>answerTranslate(decodeURIComponent(b.dataset.v),b));
+}
+function answerTranslate(v,btn){
+ if(locked)return;locked=true;clearTimeout(timerId);
+ const ok=v===current.v;
+ document.querySelectorAll(".answer").forEach(b=>{if(decodeURIComponent(b.dataset.v)===current.v)b.classList.add("correct")});
+ if(!ok)btn.classList.add("wrong");grade(ok,ok?"🎉 Chính xác!":"💡 Đáp án: "+current.v);
+}
+function makeSentence(w){
+ const t=w.h;
+ const banks={
+ "喜歡":[`我很${t}喝珍珠奶茶。`,`我${t}學中文。`],
+ "漂亮":[`她很${t}。`,`這個地方很${t}。`],
+ "學習":[`我每天${t}中文。`,`我們一起${t}。`],
+ "朋友":[`他是我的${t}。`,`我和${t}一起吃飯。`],
+ "老師":[`我的${t}很好。`,`老師教我們中文。`],
+ "學生":[`我是${t}。`,`那個${t}正在學中文。`],
+ "吃飯":[`我們一起${t}吧。`,`我晚上六點${t}。`],
+ "喝水":[`運動以後要${t}。`,`我現在想${t}。`],
+ "今天":[`${t}我很開心。`,`${t}是星期幾？`],
+ "明天":[`${t}我們一起去學校。`,`我${t}有課。`],
+ "昨天":[`${t}我去了台北。`,`我${t}很忙。`],
+ "現在":[`我${t}正在學中文。`,`你${t}有空嗎？`],
+ "可以":[`我${t}坐這裡嗎？`,`我們${t}一起去。`]
+ };
+ if(banks[t])return pick(banks[t]);
+ return `我今天要${t}。`;
+}
+function renderFill(){
+ let sentence=makeSentence(current);
+ const re=new RegExp(current.h.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),"g");
+ sentence=sentence.replace(re,'<span class="blank">_____</span>');
+ $("questionArea").innerHTML=`<div class="blankSentence">${sentence}</div><div class="sentenceBox"><input id="fillInput" autocomplete="off" placeholder="Gõ từ tiếng Trung..." style="width:100%;padding:15px;border:2px solid var(--line);border-radius:16px;outline:none"><div class="actionRow"><button class="primary" id="fillSubmit">✅ Kiểm tra</button><button class="secondary" id="fillSpeak">🔊 Nghe</button></div></div>`;
+ $("fillSubmit").onclick=()=>answerFill($("fillInput").value.trim());
+ $("fillInput").onkeydown=e=>{if(e.key==="Enter")answerFill(e.target.value.trim())};
+ $("fillSpeak").onclick=()=>speak(sentence.replace(/<[^>]+>/g,""));
+}
+function answerFill(v){
+ if(locked)return;locked=true;clearTimeout(timerId);
+ const normalize=s=>s.replace(/\s/g,"").toLowerCase();
+ const ok=normalize(v)===normalize(current.h);
+ grade(ok,ok?"🎉 Điền đúng!":"💡 Đáp án: "+current.h);
+}
+function renderWrite(){
+ $("questionArea").innerHTML=`<div class="hanzi">${escapeHTML(current.h)}</div><div class="pinyin">${escapeHTML(current.p)}</div><p>Hãy tự đặt một câu tiếng Trung có dùng từ <b>${escapeHTML(current.h)}</b>.</p><div class="sentenceBox"><textarea id="writeInput" placeholder="Ví dụ: 我很喜歡喝珍珠奶茶。"></textarea><div class="actionRow"><button class="primary" id="writeSubmit">📝 Chấm câu</button><button class="secondary" id="writeSpeak">🔊 Đọc từ</button></div></div>`;
+ $("writeSubmit").onclick=()=>answerWrite($("writeInput").value.trim());
+ $("writeSpeak").onclick=()=>speak(current.h);
+}
+function answerWrite(v){
+ if(locked)return;locked=true;clearTimeout(timerId);
+ const has=v.includes(current.h), lengthOK=v.length>=4;
+ let points=0,msg="";
+ if(has&&lengthOK){points=10;msg="🌟 Rất tốt! Bạn đã dùng đúng từ."}
+ else if(has){points=7;msg="👍 Có dùng đúng từ. Câu hơi ngắn."}
+ else {points=0;msg="💡 Câu chưa chứa từ cần luyện: "+current.h}
+ correct += points>0?1:0; wrong += points>0?0:1; streak=points>0?streak+1:0; score+=points+(points>=10?Math.min(streak,5):0);
+ if(score>best){best=score;localStorage.bestScore=best}
+ $("feedback").textContent=msg;$("feedback").className="feedback "+(points?"good":"bad");updateStats();
+ if(points){correctSound();speak(v);index++;setTimeout(nextQuestion,1300)}else{wrongSound();speak(current.h);setTimeout(nextQuestion,1800)}
+}
+function grade(ok,msg){
+ if(ok){correct++;streak++;score+=10+Math.min(streak,5);if(streak>=3)score+=3;correctSound();$("feedback").className="feedback good";speak(current.h)}
+ else{wrong++;streak=0;score=Math.max(0,score-2);wrongSound();$("feedback").className="feedback bad"}
+ if(score>best){best=score;localStorage.bestScore=best}
+ $("feedback").textContent=msg;updateStats();index++;
+ setTimeout(nextQuestion,ok?950:1700);
+}
+function handleAnswer(_,__,timeout=false){
+ if(locked)return;locked=true;clearTimeout(timerId);wrong++;streak=0;score=Math.max(0,score-2);wrongSound();
+ $("feedback").textContent=timeout?"⏰ Hết giờ! Đáp án: "+current.v:"💡 Thử lại nhé!";
+ $("feedback").className="feedback bad";updateStats();index++;setTimeout(nextQuestion,1700);
+}
+function finish(){
+ clearTimeout(timerId);stopMusic();winSound();speak("Chúc mừng! Bạn đã hoàn thành trò chơi!");
+ $("questionArea").innerHTML=`<div class="hanzi">🏆</div><h2>Hoàn thành!</h2><p>Bạn trả lời đúng <b>${correct}</b> / ${roundTotal} câu.</p><p>Điểm: <b>${score}</b> · Kỷ lục: <b>${best}</b></p><div class="actionRow"><button class="primary" id="again">🔄 Chơi lại</button></div>`;
+ $("again").onclick=newRound;updateStats();
+}
+document.querySelectorAll(".mode").forEach(b=>b.onclick=()=>{document.querySelectorAll(".mode").forEach(x=>x.classList.remove("active"));b.classList.add("active");mode=b.dataset.mode;newRound()});
+$("startBtn").onclick=()=>{try{if(audioOn){audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();audioCtx.resume();startMusic()}}catch(e){}newRound()};
+$("soundBtn").onclick=()=>{
+ audioOn=!audioOn;$("soundBtn").textContent=audioOn?"🔊 Âm thanh":"🔇 Âm thanh";
+ if(audioOn){try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();audioCtx.resume()}catch(e){}startMusic();toast("Đã bật âm thanh 🎵")}else{stopMusic();if(window.speechSynthesis)speechSynthesis.cancel();toast("Đã tắt âm thanh")}
+};
+$("avatarBtn").onclick=()=>$("avatarFile").click();
+$("avatarFile").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{ $("avatar").src=r.result;localStorage.avatar=r.result};r.readAsDataURL(f)};
+if(localStorage.avatar)$("avatar").src=localStorage.avatar;
+$("dataBtn").onclick=()=>{$("dataModal").style.display="flex";$("dataInput").value=vocab.map(x=>`${x.h} | ${x.p} | ${x.v}`).join("\n");$("dataStatus").textContent=`Hiện đang có ${vocab.length} từ trong game.`};
+$("closeData").onclick=()=>$("dataModal").style.display="none";
+$("saveData").onclick=()=>{
+ const parsed=parseVocab($("dataInput").value);
+ if(parsed.length<2){$("dataStatus").textContent="Không đọc được dữ liệu. Hãy kiểm tra định dạng.";return}
+ vocab=parsed;localStorage.vocab766=JSON.stringify(vocab);$("dataStatus").textContent=`Đã lưu ${vocab.length} từ.`;
+ toast(`Đã nạp ${vocab.length} từ 🎉`);newRound();
+};
+$("clearData").onclick=()=>{localStorage.removeItem("vocab766");vocab=DEFAULT_VOCAB;$("dataStatus").textContent="Đã xóa bộ từ đã lưu; đang dùng dữ liệu mẫu.";newRound()};
+$("dataModal").onclick=e=>{if(e.target===$("dataModal"))$("dataModal").style.display="none"};
+
+updateStats();newRound();
+</script>
+</body>
+</html>
